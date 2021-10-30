@@ -56,8 +56,8 @@ foreach my $line ( @seqs ){
         chomp $line;
         if( $line =~ /^(\S+)\n(\S+)\n(\S+)$/ ){
                 my $tag = $1;
-                my $seq1 =$2;
-                my $seq2 =$3;
+                my $seq1 = "\U$2\E";
+                my $seq2 = "\U$3\E";
                 my ($corrected_4dtv, $raw_4dtv, $condon_4d, $codon_4dt) = &calculate_4dtv($seq1, $seq2);
                 print "$tag\t$corrected_4dtv\t$raw_4dtv\t$condon_4d\t$codon_4dt\n";
         }
@@ -94,7 +94,9 @@ sub calculate_4dtv {
 				$fre{$_}=0.5*$fre{$_}/$condon_4d;
 			}
 
-			if($fre{Y}!=0 && $fre{R}!=0 && $fre{A}!=0 && $fre{C}!=0 && $fre{G}!=0 && $fre{T}!=0){
+			if($fre{Y}!=0 && $fre{R}!=0 && $fre{A}!=0 && $fre{C}!=0 && $fre{G}!=0 && $fre{T}!=0
+			&& 1-$V*($fre{T}*$fre{C}*$fre{R}/$fre{Y}+$fre{A}*$fre{G}*$fre{Y}/$fre{R})/(2*($fre{T}*$fre{C}*$fre{R}+$fre{A}*$fre{G}*$fre{Y})) != 0
+			){
 				$a=-1*log(1-$V*($fre{T}*$fre{C}*$fre{R}/$fre{Y}+$fre{A}*$fre{G}*$fre{Y}/$fre{R})/(2*($fre{T}*$fre{C}*$fre{R}+$fre{A}*$fre{G}*$fre{Y})));
 				if (1-$V/(2*$fre{Y}*$fre{R}) > 0) {
 					$b=-1*log(1-$V/(2*$fre{Y}*$fre{R}));
